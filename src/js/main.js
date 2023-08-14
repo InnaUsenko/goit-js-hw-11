@@ -4,6 +4,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import { listItems } from './photo-api.js';
 
 const loadMoreBtn = document.querySelector('.load-more');
+const searchForm = document.querySelector('#search-form');
 const galleryDiv = document.querySelector('.gallery');
 const options = {
   captions: true,
@@ -14,6 +15,21 @@ const options = {
   captionsData: 'alt',
 };
 
+searchForm.addEventListener('submit', event => {
+  event.preventDefault();
+  const {
+    elements: { searchQuery },
+  } = event.currentTarget;
+  if (searchQuery.value.length < 1) {
+    Notiflix.Notify.failure(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
+    return;
+  }
+  galleryDiv.innerHTML = drowPictures(listItems);
+
+  const lightbox = new SimpleLightbox('.photo-card a', options);
+});
 loadMoreBtn.addEventListener('click', event => {
   galleryDiv.innerHTML = drowPictures(listItems);
 
