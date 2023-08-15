@@ -55,9 +55,19 @@ body {
 }
 
 .photo-card {
-  width: calc((100% - 3 * 24px) / 4);
+  width: 396px;
 }
-
+@media only screen and (min-width: 768px) {
+  .photo-card {
+    width: calc((100% - 1 * 24px) / 2);
+  }
+}
+/* Destop styles & >  */
+@media only screen and (min-width: 1158px) {
+  .photo-card {
+    width: calc((100% - 3 * 24px) / 4);
+  }
+}
 .pict {
   height: 80%;
 }
