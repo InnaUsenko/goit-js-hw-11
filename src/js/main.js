@@ -60,13 +60,7 @@ searchForm.addEventListener('submit', event => {
 loadMoreBtn.addEventListener('click', event => {
   fetchImages(sQuery, per_page, ++page).then(el => {
     console.log(el);
-    if (el.totalHits <= page * per_page) {
-      loadMoreBtn.hidden = true;
-      Notiflix.Notify.failure(
-        "We're sorry, but you've reached the end of search results."
-      );
-      return;
-    }
+
     const listItems = el.hits;
     if (listItems && listItems.length > 0) {
       galleryDiv.insertAdjacentHTML('beforeend', drowPictures(listItems));
@@ -84,6 +78,13 @@ loadMoreBtn.addEventListener('click', event => {
       loadMoreBtn.hidden = true;
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
+      );
+      return;
+    }
+    if (el.totalHits <= page * per_page) {
+      loadMoreBtn.hidden = true;
+      Notiflix.Notify.failure(
+        "We're sorry, but you've reached the end of search results."
       );
       return;
     }
