@@ -36,7 +36,7 @@ searchForm.addEventListener('submit', event => {
   }
   sQuery = searchQuery.value;
   fetchImages(sQuery, per_page, page).then(el => {
-    listItems = el.hits;
+    const listItems = el.hits;
     if (listItems && listItems.length > 0) {
       galleryDiv.innerHTML = drowPictures(listItems);
       lightbox = new SimpleLightbox('.photo-card a', options);
