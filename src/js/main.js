@@ -16,7 +16,7 @@ const options = {
 };
 let sQuery = '';
 let lightbox;
-let per_page = 4;
+let per_page = 40;
 let page = 1;
 loadMoreBtn.hidden = true;
 
@@ -27,6 +27,8 @@ searchForm.addEventListener('submit', event => {
     elements: { searchQuery },
   } = event.currentTarget;
   if (searchQuery.value.length < 1) {
+    loadMoreBtn.hidden = true;
+    galleryDiv.innerHTML = '';
     Notiflix.Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
@@ -41,6 +43,8 @@ searchForm.addEventListener('submit', event => {
       Notiflix.Notify.success(`Hooray! We found ${el.totalHits} images.`);
       loadMoreBtn.hidden = false;
     } else {
+      loadMoreBtn.hidden = true;
+      galleryDiv.innerHTML = '';
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
@@ -60,6 +64,12 @@ loadMoreBtn.addEventListener('click', event => {
         'Sorry, there are no images matching your search query. Please try again.'
       );
       return;
+    }
+    if (el.totalHits <= page * per_page) {
+      loadMoreBtn.hidden = true;
+      Notiflix.Notify.failure(
+        "We're sorry, but you've reached the end of search results."
+      );
     }
   });
 });
@@ -104,3 +114,12 @@ function drowPictures(dataList) {
     })
     .join('');
 }
+
+const { height: cardHeight } = document
+  .querySelector('.gallery')
+  .firstElementChild.getBoundingClientRect();
+
+window.scrollBy({
+  top: cardHeight * 2,
+  behavior: 'smooth',
+});
