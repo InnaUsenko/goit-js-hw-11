@@ -38,6 +38,7 @@ searchForm.addEventListener('submit', event => {
     if (listItems && listItems.length > 0) {
       galleryDiv.innerHTML = drowPictures(listItems);
       lightbox = new SimpleLightbox('.photo-card a', options);
+      Notiflix.Notify.success(`Hooray! We found ${el.totalHits} images.`);
       loadMoreBtn.hidden = false;
     } else {
       Notiflix.Notify.failure(
@@ -78,25 +79,25 @@ function drowPictures(dataList) {
         <p class="info-item">
             <b>Likes</b>
           </p>
-          <p class="data-item">99</p>
+          <p class="data-item">${pict.likes}</p>
       </div>
       <div class="item">
           <p class="info-item">
             <b>Views</b>
           </p>
-          <p class="data-item">99</p>
+          <p class="data-item">${pict.views}</p>
         </div>
         <div class="item">
           <p class="info-item">
             <b>Comments</b>
           </p>
-          <p class="data-item">99</p>
+          <p class="data-item">${pict.comments}</p>
         </div>
         <div class="item">
           <p class="info-item">
             <b>Downloads</b>
           </p>
-          <p class="data-item">0</p>
+          <p class="data-item">${pict.downloads}</p>
         </div>
     </div>
 </div>`;
