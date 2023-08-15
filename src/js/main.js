@@ -1,7 +1,7 @@
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import { listItems } from './photo-api.js';
+import { fetchImages } from './photo-api.js';
 
 const loadMoreBtn = document.querySelector('.load-more');
 const searchForm = document.querySelector('#search-form');
@@ -14,9 +14,15 @@ const options = {
   captionPosition: 'bottom',
   captionsData: 'alt',
 };
+let sQuery = '';
+let lightbox;
+let per_page = 4;
+let page = 1;
+loadMoreBtn.hidden = true;
 
 searchForm.addEventListener('submit', event => {
   event.preventDefault();
+  page = 1;
   const {
     elements: { searchQuery },
   } = event.currentTarget;
@@ -26,24 +32,44 @@ searchForm.addEventListener('submit', event => {
     );
     return;
   }
-  galleryDiv.innerHTML = drowPictures(listItems);
-
-  const lightbox = new SimpleLightbox('.photo-card a', options);
+  sQuery = searchQuery.value;
+  fetchImages(sQuery, per_page, page).then(el => {
+    listItems = el.hits;
+    if (listItems && listItems.length > 0) {
+      galleryDiv.innerHTML = drowPictures(listItems);
+      lightbox = new SimpleLightbox('.photo-card a', options);
+      loadMoreBtn.hidden = false;
+    } else {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+      return;
+    }
+  });
 });
-loadMoreBtn.addEventListener('click', event => {
-  galleryDiv.innerHTML = drowPictures(listItems);
 
-  const lightbox = new SimpleLightbox('.photo-card a', options);
+loadMoreBtn.addEventListener('click', event => {
+  fetchImages(sQuery, per_page, ++page).then(el => {
+    const listItems = el.hits;
+    if (listItems && listItems.length > 0) {
+      galleryDiv.insertAdjacentHTML('beforeend', drowPictures(listItems));
+      lightbox.refresh();
+    } else {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+      return;
+    }
+  });
 });
 
 function drowPictures(dataList) {
-  console.log(dataList.length);
   return dataList
     .map(pict => {
       return `<div class="photo-card">
       <div class="pict">
-        <a href=${pict.original} class='gallery__link'>
-        <img src="${pict.preview}" alt="${pict.description}" loading="lazy" class="gallery__img"/>
+        <a href=${pict.largeImageURL} class='gallery__link'>
+        <img src="${pict.webformatURL}" alt="${pict.tags}" loading="lazy" class="gallery__img"/>
         </a>
       </div>
    
